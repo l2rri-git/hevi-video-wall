@@ -1,0 +1,33 @@
+body{margin:0;background:#0A0E13}
+button{font:inherit;color:inherit}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid #4CC3FF;outline-offset:2px}
+.rowbtn:focus-visible{outline:none}
+.peek{opacity:.12;transition:opacity .2s}.peek:hover,.peek:focus-visible{opacity:1}
+.mt{container-type:size}
+@container (max-height: 84px){.mt-name{display:none}}
+@container (max-height: 58px){.mt-sub{display:none}}
+@container (max-height: 40px){.mt-num{display:none}}
+input::placeholder{color:#6F7E92}
+a{color:#4CC3FF}a:hover{color:#8ED9FF}
+.scn{background-repeat:no-repeat;background-color:#0D1117}
+.scn-harbour-d{background-image:url("/scenes/harbour-d.svg")}
+.scn-harbour-t{background-image:url("/scenes/harbour-t.svg")}
+.scn-sea-d{background-image:url("/scenes/sea-d.svg")}
+.scn-sea-t{background-image:url("/scenes/sea-t.svg")}
+.scn-coast-d{background-image:url("/scenes/coast-d.svg")}
+.scn-coast-t{background-image:url("/scenes/coast-t.svg")}
+.scn-road-d{background-image:url("/scenes/road-d.svg")}
+.scn-road-t{background-image:url("/scenes/road-t.svg")}
+.scn-forest-d{background-image:url("/scenes/forest-d.svg")}
+.scn-forest-t{background-image:url("/scenes/forest-t.svg")}
+.scn-ridge-d{background-image:url("/scenes/ridge-d.svg")}
+.scn-ridge-t{background-image:url("/scenes/ridge-t.svg")}
+.scn-checkpoint-d{background-image:url("/scenes/checkpoint-d.svg")}
+.scn-checkpoint-t{background-image:url("/scenes/checkpoint-t.svg")}
+.scn-airfield-d{background-image:url("/scenes/airfield-d.svg")}
+.scn-airfield-t{background-image:url("/scenes/airfield-t.svg")}
+.scn-bridge-d{background-image:url("/scenes/bridge-d.svg")}
+.scn-bridge-t{background-image:url("/scenes/bridge-t.svg")}
+.scn-village-d{background-image:url("/scenes/village-d.svg")}
+.scn-village-t{background-image:url("/scenes/village-t.svg")}
