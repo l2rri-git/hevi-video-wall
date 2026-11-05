@@ -356,7 +356,7 @@ export default function Template(V) {
                         </span>{" "}
                       </button>
                       <a
-                        href="/wall"
+                        href={import.meta.env.BASE_URL + "wall/"}
                         target="hevi-wall"
                         rel="noopener"
                         aria-label="Open the wall in its own tab"

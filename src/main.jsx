@@ -8,7 +8,7 @@ const params = new URLSearchParams(window.location.search);
 const layout = params.get('layout') === 'a' ? 'a' : 'b';
 const labelScale = Number(params.get('labelScale')) || DEFAULT_PROPS.labelScale;
 // /wall shows only the wall and follows the desk open in another tab.
-const screen = window.location.pathname.replace(/\/+$/, '') === '/wall' ? 'wall' : 'desk';
+const screen = /\/wall\/?$/.test(window.location.pathname) ? 'wall' : 'desk';
 document.title = screen === 'wall' ? 'Hevi wall' : 'Hevi desk' + (layout === 'a' ? ' · layout A' : '');
 
 createRoot(document.getElementById('root')).render(<Prototype layout={layout} labelScale={labelScale} screen={screen} />);

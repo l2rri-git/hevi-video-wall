@@ -1793,8 +1793,15 @@ class Component extends DCLogic {
     var byCs = function (a, b) {
       return a.s.cs.localeCompare(b.s.cs);
     };
+    // Distance ranking: a system with both feeds offline goes to the end.
+    var bothOff = function (o) {
+      return fState(o.s, "day") === "offline" && fState(o.s, "thermal") === "offline" ? 1 : 0;
+    };
     var byDist = function (a, b) {
-      return a.dist == null || b.dist == null ? byCs(a, b) : a.dist - b.dist;
+      return (
+        bothOff(a) - bothOff(b) ||
+        (a.dist == null || b.dist == null ? byCs(a, b) : a.dist - b.dist)
+      );
     };
     if (sortMode === "best") {
       if (ref && (P.grid || nearMode)) {
