@@ -11,6 +11,8 @@ npm run dev
 
 Opens http://localhost:5173 (layout B). Layout A: http://localhost:5173/?layout=a
 
+Wall on its own: http://localhost:5173/wall (open it in another tab or window; it follows the desk).
+
 Refresh the page to reset the prototype.
 
 ## Build

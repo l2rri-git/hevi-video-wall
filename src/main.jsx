@@ -7,6 +7,8 @@ import './styles.css';
 const params = new URLSearchParams(window.location.search);
 const layout = params.get('layout') === 'a' ? 'a' : 'b';
 const labelScale = Number(params.get('labelScale')) || DEFAULT_PROPS.labelScale;
-document.title = 'Hevi video wall prototype' + (layout === 'a' ? ' · layout A' : '');
+// /wall shows only the wall and follows the desk open in another tab.
+const screen = window.location.pathname.replace(/\/+$/, '') === '/wall' ? 'wall' : 'desk';
+document.title = screen === 'wall' ? 'Hevi wall' : 'Hevi desk' + (layout === 'a' ? ' · layout A' : '');
 
-createRoot(document.getElementById('root')).render(<Prototype layout={layout} labelScale={labelScale} />);
+createRoot(document.getElementById('root')).render(<Prototype layout={layout} labelScale={labelScale} screen={screen} />);

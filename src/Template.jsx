@@ -1,6 +1,32 @@
 // Generated from the Claude Design prototype (Main.dc.html). The markup mirrors the canvas version.
-import React from 'react';
-import { css } from './css.js';
+import React from "react";
+import { css } from "./css.js";
+import Osd from "./Osd.jsx";
+
+// Section number badge; lit when the section has the keyboard.
+function SecKey({ n, on }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        display: "inline-block",
+        minWidth: "1.4em",
+        textAlign: "center",
+        marginRight: "6px",
+        padding: "0 3px",
+        borderRadius: "3px",
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: "10.5px",
+        letterSpacing: 0,
+        color: on ? "#04121C" : "#95A3B5",
+        background: on ? "#4CC3FF" : "transparent",
+        border: on ? "1px solid #4CC3FF" : "1px solid #3A4B63",
+      }}
+    >
+      {n}
+    </span>
+  );
+}
 
 export default function Template(V) {
   return (
@@ -8,6 +34,8 @@ export default function Template(V) {
       <div
         tabIndex="-1"
         onKeyDown={V.onDeskKey}
+        onKeyUp={V.onDeskKeyUp}
+        onFocus={V.onDeskFocus}
         onMouseDown={V.markActive}
         onClick={V.claimFocus}
         style={css(
@@ -21,21 +49,31 @@ export default function Template(V) {
               aria-modal="true"
               aria-label="Keyboard shortcuts"
               style={css(
-                `position: absolute; inset: 0; z-index: 50; background: rgba(5, 7, 10, 0.72); display: flex; align-items: flex-start; justify-content: center; padding: 72px 24px; box-sizing: border-box; overflow-y: auto;`,
+                `position: absolute; inset: 0; z-index: 50; background: rgba(5, 7, 10, 0.72); display: flex; align-items: flex-start; justify-content: center; padding: 32px 24px; box-sizing: border-box; overflow-y: auto;`,
               )}
             >
               <div
                 style={css(
-                  `width: 100%; max-width: 780px; background: #111720; border: 1px solid #3A4B63; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);`,
+                  `width: 100%; max-width: 1240px; background: #111720; border: 1px solid #3A4B63; border-radius: 12px; padding: 18px 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);`,
                 )}
               >
-                <div style={css(`display: flex; justify-content: space-between; align-items: center; gap: 12px;`)}>
-                  <div style={css(`display: flex; flex-direction: column; gap: 2px;`)}>
-                    <span style={css(`font-size: 18px; font-weight: 600;`)}>{'Keyboard shortcuts'}</span>
+                <div
+                  style={css(
+                    `display: flex; justify-content: space-between; align-items: center; gap: 12px;`,
+                  )}
+                >
+                  <div
+                    style={css(
+                      `display: flex; flex-direction: column; gap: 2px;`,
+                    )}
+                  >
+                    <span style={css(`font-size: 18px; font-weight: 600;`)}>
+                      {"Keyboard shortcuts"}
+                    </span>
                     <span style={css(`font-size: 12.5px; color: #95A3B5;`)}>
-                      {'Showing '}
+                      {"Showing "}
                       {V.osName}
-                      {' keys \u00b7 press ? to open or close'}
+                      {" keys \u00b7 press ? to open or close"}
                     </span>
                   </div>
                   <button
@@ -46,13 +84,21 @@ export default function Template(V) {
                       `height: 34px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                     )}
                   >
-                    {'Close \u00b7 Esc'}
+                    {"Close \u00b7 Esc"}
                   </button>
                 </div>
-                <div style={css(`display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px;`)}>
+                <div
+                  style={css(
+                    `column-count: 3; column-gap: 28px;`,
+                  )}
+                >
                   {(V.shortcuts || []).map((sg, i_sg) => (
                     <React.Fragment key={sg && sg.key != null ? sg.key : i_sg}>
-                      <div style={css(`display: flex; flex-direction: column; gap: 4px;`)}>
+                      <div
+                        style={css(
+                          `display: flex; flex-direction: column; gap: 2px; break-inside: avoid; margin-bottom: 16px;`,
+                        )}
+                      >
                         <span
                           style={css(
                             `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5; margin-bottom: 2px;`,
@@ -61,17 +107,23 @@ export default function Template(V) {
                           {sg.title}
                         </span>
                         {(sg.items || []).map((si, i_si) => (
-                          <React.Fragment key={si && si.key != null ? si.key : i_si}>
+                          <React.Fragment
+                            key={si && si.key != null ? si.key : i_si}
+                          >
                             <div
                               style={css(
-                                `display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; border-bottom: 1px solid #1E2836; padding: 5px 0;`,
+                                `display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; border-bottom: 1px solid #1E2836; padding: 4px 0;`,
                               )}
                             >
-                              {' '}
-                              <span>{si.d}</span>{' '}
-                              <span style={css(`font-family: 'IBM Plex Mono', monospace; color: #8ED9FF; white-space: nowrap;`)}>
+                              {" "}
+                              <span>{si.d}</span>{" "}
+                              <span
+                                style={css(
+                                  `font-family: 'IBM Plex Mono', monospace; color: #8ED9FF; white-space: nowrap;`,
+                                )}
+                              >
                                 {si.k}
-                              </span>{' '}
+                              </span>{" "}
                             </div>
                           </React.Fragment>
                         ))}
@@ -83,8 +135,16 @@ export default function Template(V) {
             </div>
           </>
         ) : null}
-        <div style={css(`flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; gap: 10px;`)}>
-          <div style={css(`flex: 1 1 auto; min-height: 0; display: flex; gap: 20px;`)}>
+        <div
+          style={css(
+            `flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; gap: 10px;`,
+          )}
+        >
+          <div
+            style={css(
+              `flex: 1 1 auto; min-height: 0; display: flex; gap: 20px;`,
+            )}
+          >
             {V.isDesk ? (
               <>
                 <section
@@ -98,30 +158,46 @@ export default function Template(V) {
                       `flex: 0 0 auto; display: flex; flex-wrap: nowrap; align-items: center; gap: 8px 12px; padding: 8px 14px; border-bottom: 1px solid #243042; white-space: nowrap;`,
                     )}
                   >
-                    <div style={css(`display: flex; flex-direction: column; gap: 2px; min-width: 0;`)}>
+                    <div
+                      style={css(
+                        `display: flex; flex-direction: column; gap: 2px; min-width: 0;`,
+                      )}
+                    >
                       <span
-                        style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`)}
+                        style={css(
+                          `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
+                        )}
                       >
-                        {'HEVI \u00b7 LAYOUT DESK \u00b7 WALL 1'}
+                        {"HEVI \u00b7 LAYOUT DESK \u00b7 WALL 1"}
                       </span>
-                      <div style={css(`display: flex; align-items: center; gap: 8px;`)}>
-                        <span style={css(`font-size: 16px; font-weight: 600;`)}>{V.layoutTitle}</span>
+                      <div
+                        style={css(
+                          `display: flex; align-items: center; gap: 8px;`,
+                        )}
+                      >
+                        <span style={css(`font-size: 16px; font-weight: 600;`)}>
+                          {V.layoutTitle}
+                        </span>
                         {V.edited ? (
                           <>
-                            {' '}
+                            {" "}
                             <span
                               style={css(
                                 `font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #95A3B5; border: 1px solid #33435A; border-radius: 4px; padding: 1px 6px;`,
                               )}
                             >
-                              {'EDITED'}
-                            </span>{' '}
+                              {"EDITED"}
+                            </span>{" "}
                           </>
                         ) : null}
                       </div>
                     </div>
                     <div style={css(`flex: 1 1 auto;`)}> </div>
-                    <div role="group" aria-label="History" style={css(`display: flex; gap: 4px;`)}>
+                    <div
+                      role="group"
+                      aria-label="History"
+                      style={css(`display: flex; gap: 4px;`)}
+                    >
                       <button
                         type="button"
                         onClick={V.undo}
@@ -132,7 +208,7 @@ export default function Template(V) {
                           `height: 34px; width: 40px; border-radius: 6px; font-size: 18px; line-height: 1; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                         )}
                       >
-                        {'\u21b6'}
+                        {"\u21b6"}
                       </button>
                       <button
                         type="button"
@@ -144,7 +220,7 @@ export default function Template(V) {
                           `height: 34px; width: 40px; border-radius: 6px; font-size: 18px; line-height: 1; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                         )}
                       >
-                        {'\u21b7'}
+                        {"\u21b7"}
                       </button>
                     </div>
                     <button
@@ -157,18 +233,30 @@ export default function Template(V) {
                         `height: 32px; padding: 0 10px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; border: 1px solid #33435A; display: flex; align-items: center; gap: 6px;`,
                       )}
                     >
-                      {' '}
-                      <span>{'Keys'}</span>{' '}
+                      {" "}
+                      <span>{"Keys"}</span>{" "}
                       <span
                         style={css(
                           `font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #95A3B5; border: 1px solid #33435A; border-radius: 3px; padding: 0 4px;`,
                         )}
                       >
-                        {'?'}
-                      </span>{' '}
+                        {"?"}
+                      </span>{" "}
                     </button>
-                    <div role="group" aria-label="When changes reach the wall" style={css(`display: flex; align-items: center; gap: 4px;`)}>
-                      <span style={css(`font-size: 12px; color: #95A3B5; margin-right: 4px;`)}>{'Changes go'}</span>
+                    <div
+                      role="group"
+                      aria-label="When changes reach the wall"
+                      style={css(
+                        `display: flex; align-items: center; gap: 4px;`,
+                      )}
+                    >
+                      <span
+                        style={css(
+                          `font-size: 12px; color: #95A3B5; margin-right: 4px;`,
+                        )}
+                      >
+                        {"Changes go"}
+                      </span>
                       <button
                         type="button"
                         onClick={V.setLive}
@@ -178,7 +266,7 @@ export default function Template(V) {
                           `height: 32px; padding: 0 10px; border-radius: 6px; font-size: 13px; cursor: pointer; background: ${V.liveBg}; border: ${V.liveBorder};`,
                         )}
                       >
-                        {'Live'}
+                        {"Live"}
                       </button>
                       <button
                         type="button"
@@ -189,13 +277,21 @@ export default function Template(V) {
                           `height: 32px; padding: 0 10px; border-radius: 6px; font-size: 13px; cursor: pointer; background: ${V.stagedBg}; border: ${V.stagedBorder};`,
                         )}
                       >
-                        {'Staged'}
+                        {"Staged"}
                       </button>
                     </div>
                     {V.hasStaged ? (
                       <>
-                        <div style={css(`display: flex; align-items: center; gap: 8px;`)}>
-                          <span style={css(`font-size: 12.5px; color: #FFD27A;`)}>{V.stagedText}</span>
+                        <div
+                          style={css(
+                            `display: flex; align-items: center; gap: 8px;`,
+                          )}
+                        >
+                          <span
+                            style={css(`font-size: 12.5px; color: #FFD27A;`)}
+                          >
+                            {V.stagedText}
+                          </span>
                           <button
                             type="button"
                             onClick={V.discard}
@@ -203,7 +299,7 @@ export default function Template(V) {
                               `height: 34px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                             )}
                           >
-                            {'Discard'}
+                            {"Discard"}
                           </button>
                           <button
                             type="button"
@@ -212,7 +308,7 @@ export default function Template(V) {
                               `height: 34px; padding: 0 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #4CC3FF; color: #04121C; border: 1px solid #4CC3FF;`,
                             )}
                           >
-                            {'Publish to wall'}
+                            {"Publish to wall"}
                           </button>
                         </div>
                       </>
@@ -227,7 +323,9 @@ export default function Template(V) {
                     <div
                       role="group"
                       aria-label="Screen"
-                      style={css(`display: flex; align-items: center; gap: 4px; padding-left: 12px; border-left: 1px solid #243042;`)}
+                      style={css(
+                        `display: flex; align-items: center; gap: 4px; padding-left: 12px; border-left: 1px solid #243042;`,
+                      )}
                     >
                       <button
                         type="button"
@@ -237,7 +335,7 @@ export default function Template(V) {
                           `height: 30px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: #1C2B3B; border: 1px solid #4CC3FF;`,
                         )}
                       >
-                        {'Desk'}
+                        {"Desk"}
                       </button>
                       <button
                         type="button"
@@ -248,23 +346,47 @@ export default function Template(V) {
                           `height: 30px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                         )}
                       >
-                        {'Wall '}
-                        <span style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #95A3B5;`)}>
+                        {"Wall "}
+                        <span
+                          style={css(
+                            `font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #95A3B5;`,
+                          )}
+                        >
                           {V.keys.altW}
-                        </span>{' '}
+                        </span>{" "}
                       </button>
+                      <a
+                        href="/wall"
+                        target="hevi-wall"
+                        rel="noopener"
+                        aria-label="Open the wall in its own tab"
+                        title="Open the wall in its own tab"
+                        style={css(
+                          `height: 30px; width: 32px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; text-decoration: none; color: #DCE3EC; border: 1px solid #33435A;`,
+                        )}
+                      >
+                        {"↗"}
+                      </a>
                     </div>
                   </div>
-                  <div style={css(`flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; padding: 12px 14px 14px;`)}>
+                  <div
+                    style={css(
+                      `flex: 1 1 auto; min-height: 0; display: flex; gap: 14px; padding: 12px 14px 14px;`,
+                    )}
+                  >
                     <div
+                      data-sec="find"
                       style={css(
-                        `flex: 0 0 ${V.lay.searchW}; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; background: ${V.lay.searchBg}; border: ${V.lay.searchBorder}; border-radius: 10px; padding: ${V.lay.searchPad};`,
+                        `flex: 0 0 ${V.lay.searchW}; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; background: ${V.lay.searchBg}; border: ${V.lay.searchBorder}; border-radius: 10px; padding: ${V.lay.searchPad}; box-shadow: ${V.secRing.find};`,
                       )}
                     >
                       <label
                         htmlFor="feed-search"
-                        style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`)}
+                        style={css(
+                          `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
+                        )}
                       >
+                        <SecKey n="1" on={V.secOn.find} />
                         {V.lay.searchLabel}
                       </label>
                       <div style={css(`position: relative;`)}>
@@ -275,13 +397,15 @@ export default function Template(V) {
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="#95A3B5"
-                          style={css(`position: absolute; left: 12px; top: 14px;`)}
+                          style={css(
+                            `position: absolute; left: 12px; top: 14px;`,
+                          )}
                         >
-                          {' '}
+                          {" "}
                           <circle cx="11" cy="11" r="7">
-                            {' '}
-                          </circle>{' '}
-                          <path d="M20 20l-4-4"> </path>{' '}
+                            {" "}
+                          </circle>{" "}
+                          <path d="M20 20l-4-4"> </path>{" "}
                         </svg>
                         <input
                           id="feed-search"
@@ -308,7 +432,7 @@ export default function Template(V) {
                             `position: absolute; right: 6px; top: 6px; height: 32px; padding: 0 10px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #132232; border: 1px solid #2C6A8F; color: #8ED9FF; white-space: nowrap;`,
                           )}
                         >
-                          {'\u2192 '}
+                          {"\u2192 "}
                           {V.targetText}
                         </button>
                       </div>
@@ -317,11 +441,21 @@ export default function Template(V) {
                           <div
                             role="group"
                             aria-label="Send target tile"
-                            style={css(`display: flex; flex-wrap: wrap; gap: 4px; align-items: center;`)}
+                            style={css(
+                              `display: flex; flex-wrap: wrap; gap: 4px; align-items: center;`,
+                            )}
                           >
-                            <span style={css(`font-size: 12px; color: #95A3B5; margin-right: 4px;`)}>{'Send to tile'}</span>
+                            <span
+                              style={css(
+                                `font-size: 12px; color: #95A3B5; margin-right: 4px;`,
+                              )}
+                            >
+                              {"Send to tile"}
+                            </span>
                             {(V.targetOpts || []).map((o, i_o) => (
-                              <React.Fragment key={o && o.key != null ? o.key : i_o}>
+                              <React.Fragment
+                                key={o && o.key != null ? o.key : i_o}
+                              >
                                 <button
                                   type="button"
                                   onClick={o.pick}
@@ -341,8 +475,14 @@ export default function Template(V) {
                       ) : null}
                       {V.hasInterp ? (
                         <>
-                          {' '}
-                          <p style={css(`margin: 0; font-size: 12.5px; line-height: 1.45; color: #B7C3D1;`)}>{V.interp}</p>{' '}
+                          {" "}
+                          <p
+                            style={css(
+                              `margin: 0; font-size: 12.5px; line-height: 1.45; color: #B7C3D1;`,
+                            )}
+                          >
+                            {V.interp}
+                          </p>{" "}
                         </>
                       ) : null}
                       {V.hasPend ? (
@@ -353,8 +493,18 @@ export default function Template(V) {
                               `border: 1px solid ${V.pend.border}; background: ${V.pend.bg}; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px;`,
                             )}
                           >
-                            <span style={css(`font-size: 13px; font-weight: 600; color: ${V.pend.color};`)}>{V.pend.text}</span>
-                            <div style={css(`display: flex; gap: 6px; flex-wrap: wrap;`)}>
+                            <span
+                              style={css(
+                                `font-size: 13px; font-weight: 600; color: ${V.pend.color};`,
+                              )}
+                            >
+                              {V.pend.text}
+                            </span>
+                            <div
+                              style={css(
+                                `display: flex; gap: 6px; flex-wrap: wrap;`,
+                              )}
+                            >
                               <button
                                 type="button"
                                 onClick={V.pend.primary}
@@ -366,7 +516,7 @@ export default function Template(V) {
                               </button>
                               {V.pend.hasSecond ? (
                                 <>
-                                  {' '}
+                                  {" "}
                                   <button
                                     type="button"
                                     onClick={V.pend.second}
@@ -375,7 +525,7 @@ export default function Template(V) {
                                     )}
                                   >
                                     {V.pend.secondText}
-                                  </button>{' '}
+                                  </button>{" "}
                                 </>
                               ) : null}
                               <button
@@ -385,7 +535,7 @@ export default function Template(V) {
                                   `min-height: 34px; padding: 4px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                                 )}
                               >
-                                {'Cancel'}
+                                {"Cancel"}
                               </button>
                             </div>
                           </div>
@@ -394,11 +544,19 @@ export default function Template(V) {
                       <div
                         role="group"
                         aria-label="Quick filters"
-                        style={css(`display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; min-width: 0;`)}
+                        style={css(
+                          `display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; min-width: 0;`,
+                        )}
                       >
-                        <div style={css(`display: flex; gap: 4px; flex: 1 1 auto; min-width: 0; overflow: hidden;`)}>
+                        <div
+                          style={css(
+                            `display: flex; gap: 4px; flex: 1 1 auto; min-width: 0; overflow: hidden;`,
+                          )}
+                        >
                           {(V.quickChips || []).map((c, i_c) => (
-                            <React.Fragment key={c && c.key != null ? c.key : i_c}>
+                            <React.Fragment
+                              key={c && c.key != null ? c.key : i_c}
+                            >
                               <button
                                 type="button"
                                 onClick={c.toggle}
@@ -421,7 +579,7 @@ export default function Template(V) {
                           )}
                         >
                           {V.sortSummary}
-                          {' \u00b7 '}
+                          {" \u00b7 "}
                           {V.moreLabel}
                         </button>
                       </div>
@@ -435,17 +593,21 @@ export default function Template(V) {
                             <div
                               role="group"
                               aria-label="All filters"
-                              style={css(`display: flex; flex-wrap: wrap; gap: 4px; align-items: center;`)}
+                              style={css(
+                                `display: flex; flex-wrap: wrap; gap: 4px; align-items: center;`,
+                              )}
                             >
                               <span
                                 style={css(
                                   `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #95A3B5; margin-right: 4px;`,
                                 )}
                               >
-                                {'FILTER'}
+                                {"FILTER"}
                               </span>
                               {(V.chips || []).map((c, i_c) => (
-                                <React.Fragment key={c && c.key != null ? c.key : i_c}>
+                                <React.Fragment
+                                  key={c && c.key != null ? c.key : i_c}
+                                >
                                   <button
                                     type="button"
                                     onClick={c.toggle}
@@ -462,17 +624,21 @@ export default function Template(V) {
                             <div
                               role="group"
                               aria-label="Sort"
-                              style={css(`display: flex; flex-wrap: wrap; gap: 4px; align-items: center;`)}
+                              style={css(
+                                `display: flex; flex-wrap: wrap; gap: 4px; align-items: center;`,
+                              )}
                             >
                               <span
                                 style={css(
                                   `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #95A3B5; margin-right: 4px;`,
                                 )}
                               >
-                                {'SORT'}
+                                {"SORT"}
                               </span>
                               {(V.sorts || []).map((o, i_o) => (
-                                <React.Fragment key={o && o.key != null ? o.key : i_o}>
+                                <React.Fragment
+                                  key={o && o.key != null ? o.key : i_o}
+                                >
                                   <button
                                     type="button"
                                     onClick={o.pick}
@@ -493,21 +659,27 @@ export default function Template(V) {
                                   `height: 30px; padding: 0 10px; border-radius: 6px; font-size: 12.5px; cursor: pointer; background: ${V.groupBg}; border: ${V.groupBorder}; margin-left: 4px;`,
                                 )}
                               >
-                                {'Group by site'}
+                                {"Group by site"}
                               </button>
                             </div>
                           </div>
                         </>
                       ) : null}
-                      <div style={css(`display: flex; justify-content: space-between; align-items: baseline; margin-top: 2px; gap: 8px;`)}>
+                      <div
+                        style={css(
+                          `display: flex; justify-content: space-between; align-items: baseline; margin-top: 2px; gap: 8px;`,
+                        )}
+                      >
                         <span
-                          style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #95A3B5;`)}
+                          style={css(
+                            `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #95A3B5;`,
+                          )}
                         >
                           {V.resultHead}
                         </span>
                         {V.hasFilters ? (
                           <>
-                            {' '}
+                            {" "}
                             <button
                               type="button"
                               onClick={V.clearFilters}
@@ -515,8 +687,8 @@ export default function Template(V) {
                                 `height: 26px; padding: 0 8px; border-radius: 6px; font-size: 12px; cursor: pointer; background: transparent; border: 1px solid #33435A; color: #B7C3D1;`,
                               )}
                             >
-                              {'Clear filters'}
-                            </button>{' '}
+                              {"Clear filters"}
+                            </button>{" "}
                           </>
                         ) : null}
                       </div>
@@ -526,7 +698,9 @@ export default function Template(V) {
                         )}
                       >
                         {(V.sections || []).map((sec, i_sec) => (
-                          <React.Fragment key={sec && sec.key != null ? sec.key : i_sec}>
+                          <React.Fragment
+                            key={sec && sec.key != null ? sec.key : i_sec}
+                          >
                             {sec.hasTitle ? (
                               <>
                                 <div
@@ -534,38 +708,53 @@ export default function Template(V) {
                                     `display: flex; justify-content: space-between; gap: 8px; padding: 8px 4px 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: ${sec.color}; border-bottom: ${sec.border}; background: ${sec.bg}; border-radius: 4px 4px 0 0; white-space: nowrap;`,
                                   )}
                                 >
-                                  {' '}
+                                  {" "}
                                   <span
                                     style={css(
                                       `min-width: 0; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px;`,
                                     )}
                                   >
-                                    {' '}
+                                    {" "}
                                     {sec.dot ? (
                                       <>
-                                        {' '}
+                                        {" "}
                                         <span
                                           aria-hidden="true"
-                                          style={css(`flex: 0 0 7px; width: 7px; height: 7px; border-radius: 50%; background: #FF6B7A;`)}
+                                          style={css(
+                                            `flex: 0 0 7px; width: 7px; height: 7px; border-radius: 50%; background: #FF6B7A;`,
+                                          )}
                                         >
-                                          {' '}
-                                        </span>{' '}
+                                          {" "}
+                                        </span>{" "}
                                       </>
-                                    ) : null}{' '}
-                                    <span style={css(`overflow: hidden; text-overflow: ellipsis;`)}>{sec.title}</span>{' '}
-                                  </span>{' '}
-                                  <span>{sec.meta}</span>{' '}
+                                    ) : null}{" "}
+                                    <span
+                                      style={css(
+                                        `overflow: hidden; text-overflow: ellipsis;`,
+                                      )}
+                                    >
+                                      {sec.title}
+                                    </span>{" "}
+                                  </span>{" "}
+                                  <span>{sec.meta}</span>{" "}
                                 </div>
                               </>
                             ) : null}
                             {(sec.rows || []).map((r, i_r) => (
-                              <React.Fragment key={r && r.key != null ? r.key : i_r}>
+                              <React.Fragment
+                                key={r && r.key != null ? r.key : i_r}
+                              >
                                 <div
+                                  data-ri={r.ri}
                                   style={css(
                                     `display: flex; flex-direction: column; gap: 6px; padding: 5px 6px; border-radius: 6px; background: ${r.bg}; box-shadow: ${r.ring};`,
                                   )}
                                 >
-                                  <div style={css(`display: flex; align-items: center; gap: 8px;`)}>
+                                  <div
+                                    style={css(
+                                      `display: flex; align-items: center; gap: 8px;`,
+                                    )}
+                                  >
                                     <button
                                       type="button"
                                       className="rowbtn"
@@ -578,21 +767,36 @@ export default function Template(V) {
                                         `flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; text-align: left; background: transparent; border: 0; padding: 2px 0; cursor: pointer;`,
                                       )}
                                     >
-                                      <span style={css(`display: flex; align-items: baseline; gap: 6px; min-width: 0;`)}>
-                                        <span aria-hidden="true" style={css(`flex: 0 0 10px; font-size: 10px; color: #95A3B5;`)}>
+                                      <span
+                                        style={css(
+                                          `display: flex; align-items: baseline; gap: 6px; min-width: 0;`,
+                                        )}
+                                      >
+                                        <span
+                                          aria-hidden="true"
+                                          style={css(
+                                            `flex: 0 0 10px; font-size: 10px; color: #95A3B5;`,
+                                          )}
+                                        >
                                           {r.caret}
                                         </span>
-                                        <span style={css(`font-weight: 600; font-size: 14px; white-space: nowrap;`)}>{r.cs}</span>
+                                        <span
+                                          style={css(
+                                            `font-weight: 600; font-size: 14px; white-space: nowrap;`,
+                                          )}
+                                        >
+                                          {r.cs}
+                                        </span>
                                         {r.onWall ? (
                                           <>
-                                            {' '}
+                                            {" "}
                                             <span
                                               style={css(
                                                 `font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #DCE3EC; background: #2A3647; border-radius: 3px; padding: 0 4px; white-space: nowrap;`,
                                               )}
                                             >
                                               {r.onWallText}
-                                            </span>{' '}
+                                            </span>{" "}
                                           </>
                                         ) : null}
                                         <span
@@ -610,17 +814,29 @@ export default function Template(V) {
                                       >
                                         {r.hasDist ? (
                                           <>
-                                            {' '}
-                                            <span style={css(`color: ${r.distColor};`)}>{r.dist}</span>{' '}
+                                            {" "}
+                                            <span
+                                              style={css(
+                                                `color: ${r.distColor};`,
+                                              )}
+                                            >
+                                              {r.dist}
+                                            </span>{" "}
                                           </>
                                         ) : null}
-                                        <span style={css(`color: ${r.metaColor}; overflow: hidden; text-overflow: ellipsis;`)}>
+                                        <span
+                                          style={css(
+                                            `color: ${r.metaColor}; overflow: hidden; text-overflow: ellipsis;`,
+                                          )}
+                                        >
                                           {r.meta}
                                         </span>
                                       </span>
                                     </button>
                                     {(r.cams || []).map((f, i_f) => (
-                                      <React.Fragment key={f && f.key != null ? f.key : i_f}>
+                                      <React.Fragment
+                                        key={f && f.key != null ? f.key : i_f}
+                                      >
                                         <button
                                           type="button"
                                           onClick={f.send}
@@ -629,9 +845,17 @@ export default function Template(V) {
                                             `flex: 0 0 62px; height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 5px; cursor: pointer; background: ${f.bg}; border: ${f.border}; box-shadow: ${f.shadow};`,
                                           )}
                                         >
-                                          <span style={css(`font-size: 11.5px; font-weight: 600; letter-spacing: 0.05em;`)}>{f.label}</span>
                                           <span
-                                            style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: ${f.color};`)}
+                                            style={css(
+                                              `font-size: 11.5px; font-weight: 600; letter-spacing: 0.05em;`,
+                                            )}
+                                          >
+                                            {f.label}
+                                          </span>
+                                          <span
+                                            style={css(
+                                              `font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: ${f.color};`,
+                                            )}
                                           >
                                             {f.line}
                                           </span>
@@ -641,50 +865,100 @@ export default function Template(V) {
                                   </div>
                                   {r.open ? (
                                     <>
-                                      <div style={css(`display: flex; flex-direction: column; gap: 8px; padding: 2px 0 6px 16px;`)}>
-                                        <div style={css(`display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;`)}>
-                                          {(r.previews || []).map((pv, i_pv) => (
-                                            <React.Fragment key={pv && pv.key != null ? pv.key : i_pv}>
-                                              <button
-                                                type="button"
-                                                onClick={pv.send}
-                                                aria-label={pv.aria}
-                                                style={css(
-                                                  `display: flex; flex-direction: column; gap: 4px; padding: 4px; background: #0E141C; border: 1px solid #2A3647; border-radius: 6px; cursor: pointer; text-align: left;`,
-                                                )}
+                                      <div
+                                        style={css(
+                                          `display: flex; flex-direction: column; gap: 8px; padding: 2px 0 6px 16px;`,
+                                        )}
+                                      >
+                                        <div
+                                          style={css(
+                                            `display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;`,
+                                          )}
+                                        >
+                                          {(r.previews || []).map(
+                                            (pv, i_pv) => (
+                                              <React.Fragment
+                                                key={
+                                                  pv && pv.key != null
+                                                    ? pv.key
+                                                    : i_pv
+                                                }
                                               >
-                                                <span
-                                                  className={`scn ${pv.cls}`}
+                                                <button
+                                                  type="button"
+                                                  onClick={pv.send}
+                                                  aria-label={pv.aria}
                                                   style={css(
-                                                    `display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; background-size: 150%; background-position: ${pv.bpos}; filter: ${pv.filter};`,
+                                                    `display: flex; flex-direction: column; gap: 4px; padding: 4px; background: #0E141C; border: 1px solid #2A3647; border-radius: 6px; cursor: pointer; text-align: left;`,
                                                   )}
                                                 >
-                                                  {' '}
-                                                </span>
-                                                <span
-                                                  style={css(`display: flex; justify-content: space-between; gap: 6px; font-size: 11.5px;`)}
-                                                >
-                                                  {' '}
-                                                  <span style={css(`font-weight: 600;`)}>{pv.label}</span>{' '}
-                                                  <span style={css(`color: ${pv.color};`)}>{pv.state}</span>{' '}
-                                                </span>
-                                              </button>
-                                            </React.Fragment>
-                                          ))}
+                                                  <span
+                                                    className={`scn ${pv.cls}`}
+                                                    style={css(
+                                                      `display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; background-size: 150%; background-position: ${pv.bpos}; filter: ${pv.filter};`,
+                                                    )}
+                                                  >
+                                                    {" "}
+                                                  </span>
+                                                  <span
+                                                    style={css(
+                                                      `display: flex; justify-content: space-between; gap: 6px; font-size: 11.5px;`,
+                                                    )}
+                                                  >
+                                                    {" "}
+                                                    <span
+                                                      style={css(
+                                                        `font-weight: 600;`,
+                                                      )}
+                                                    >
+                                                      {pv.label}
+                                                    </span>{" "}
+                                                    <span
+                                                      style={css(
+                                                        `color: ${pv.color};`,
+                                                      )}
+                                                    >
+                                                      {pv.state}
+                                                    </span>{" "}
+                                                  </span>
+                                                </button>
+                                              </React.Fragment>
+                                            ),
+                                          )}
                                         </div>
-                                        <div style={css(`display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px;`)}>
+                                        <div
+                                          style={css(
+                                            `display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px;`,
+                                          )}
+                                        >
                                           {(r.facts || []).map((fa, i_fa) => (
-                                            <React.Fragment key={fa && fa.key != null ? fa.key : i_fa}>
-                                              <div style={css(`display: flex; flex-direction: column; min-width: 0;`)}>
-                                                {' '}
-                                                <span style={css(`font-size: 11px; color: #95A3B5;`)}>{fa.k}</span>{' '}
+                                            <React.Fragment
+                                              key={
+                                                fa && fa.key != null
+                                                  ? fa.key
+                                                  : i_fa
+                                              }
+                                            >
+                                              <div
+                                                style={css(
+                                                  `display: flex; flex-direction: column; min-width: 0;`,
+                                                )}
+                                              >
+                                                {" "}
+                                                <span
+                                                  style={css(
+                                                    `font-size: 11px; color: #95A3B5;`,
+                                                  )}
+                                                >
+                                                  {fa.k}
+                                                </span>{" "}
                                                 <span
                                                   style={css(
                                                     `font-family: 'IBM Plex Mono', monospace; font-size: 12px; overflow-wrap: anywhere;`,
                                                   )}
                                                 >
                                                   {fa.v}
-                                                </span>{' '}
+                                                </span>{" "}
                                               </div>
                                             </React.Fragment>
                                           ))}
@@ -699,7 +973,13 @@ export default function Template(V) {
                         ))}
                         {V.noResults ? (
                           <>
-                            <p style={css(`margin: 0; padding: 12px; font-size: 13px; color: #B7C3D1;`)}>{'No matches'}</p>
+                            <p
+                              style={css(
+                                `margin: 0; padding: 12px; font-size: 13px; color: #B7C3D1;`,
+                              )}
+                            >
+                              {"No matches"}
+                            </p>
                           </>
                         ) : null}
                       </div>
@@ -719,13 +999,24 @@ export default function Template(V) {
                             `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: ${V.mirrorNoteColor};`,
                           )}
                         >
-                          {'WALL MIRROR \u00b7 '}
+                          <SecKey n="2" on={V.secOn.mirror} />
+                          {"WALL MIRROR \u00b7 "}
                           {V.mirrorNote}
                         </span>
                         {V.swapping ? (
                           <>
-                            <div style={css(`display: flex; align-items: center; gap: 8px;`)}>
-                              <span style={css(`font-size: 12.5px; color: #8ED9FF;`)}>{V.swapText}</span>
+                            <div
+                              style={css(
+                                `display: flex; align-items: center; gap: 8px;`,
+                              )}
+                            >
+                              <span
+                                style={css(
+                                  `font-size: 12.5px; color: #8ED9FF;`,
+                                )}
+                              >
+                                {V.swapText}
+                              </span>
                               <button
                                 type="button"
                                 onClick={V.cancelSwap}
@@ -733,13 +1024,18 @@ export default function Template(V) {
                                   `height: 30px; padding: 0 10px; border-radius: 6px; font-size: 12.5px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                                 )}
                               >
-                                {'Cancel'}
+                                {"Cancel"}
                               </button>
                             </div>
                           </>
                         ) : null}
                       </div>
-                      <div style={css(`grid-area: mirror; min-width: 0; min-height: 0; container-type: size;`)}>
+                      <div
+                        data-sec="mirror"
+                        style={css(
+                          `grid-area: mirror; min-width: 0; min-height: 0; container-type: size; border-radius: 8px; box-shadow: ${V.secRing.mirror};`,
+                        )}
+                      >
                         <div
                           role="group"
                           aria-label="Wall layout, click a tile to select it"
@@ -748,10 +1044,13 @@ export default function Template(V) {
                           )}
                         >
                           {(V.mirror || []).map((t, i_t) => (
-                            <React.Fragment key={t && t.key != null ? t.key : i_t}>
+                            <React.Fragment
+                              key={t && t.key != null ? t.key : i_t}
+                            >
                               <button
                                 type="button"
                                 className="mt"
+                                data-ti={i_t}
                                 onClick={t.select}
                                 aria-pressed={t.pressed}
                                 aria-label={t.aria}
@@ -765,10 +1064,22 @@ export default function Template(V) {
                                     `display: flex; justify-content: flex-start; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: min(${t.numFs}, 22cqh); color: #95A3B5;`,
                                   )}
                                 >
-                                  <span style={css(`font-weight: 600; color: #DCE3EC;`)}>{t.num}</span>
-                                  <span style={css(`color: ${t.flagColor};`)}>{t.flag}</span>
+                                  <span
+                                    style={css(
+                                      `font-weight: 600; color: #DCE3EC;`,
+                                    )}
+                                  >
+                                    {t.num}
+                                  </span>
+                                  <span style={css(`color: ${t.flagColor};`)}>
+                                    {t.flag}
+                                  </span>
                                 </span>
-                                <span style={css(`display: flex; flex-direction: column; gap: 2px; min-width: 0;`)}>
+                                <span
+                                  style={css(
+                                    `display: flex; flex-direction: column; gap: 2px; min-width: 0;`,
+                                  )}
+                                >
                                   <span
                                     style={css(
                                       `display: block; font-family: 'IBM Plex Sans Condensed', sans-serif; font-size: min(${t.fs}, 34cqh, 16cqw); line-height: 1.05; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;`,
@@ -786,7 +1097,7 @@ export default function Template(V) {
                                   </span>
                                   {t.showName ? (
                                     <>
-                                      {' '}
+                                      {" "}
                                       <span
                                         className="mt-name"
                                         style={css(
@@ -794,28 +1105,28 @@ export default function Template(V) {
                                         )}
                                       >
                                         {t.name}
-                                      </span>{' '}
+                                      </span>{" "}
                                     </>
                                   ) : null}
                                 </span>
                                 {t.inset ? (
                                   <>
-                                    {' '}
+                                    {" "}
                                     <span
                                       aria-hidden="true"
                                       style={css(
                                         `position: absolute; top: ${t.insetTop}; right: 5px; width: 26%; max-height: 40%; aspect-ratio: 16 / 9; box-sizing: border-box; border: ${t.insetBorder}; border-radius: 3px; background: ${t.insetBg}; display: flex; align-items: flex-end;`,
                                       )}
                                     >
-                                      {' '}
+                                      {" "}
                                       <span
                                         style={css(
                                           `font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 600; line-height: 1.3; padding: 0 3px; color: #04121C; background: ${t.insetTagBg};`,
                                         )}
                                       >
                                         {t.insetLabel}
-                                      </span>{' '}
-                                    </span>{' '}
+                                      </span>{" "}
+                                    </span>{" "}
                                   </>
                                 ) : null}
                               </button>
@@ -824,21 +1135,43 @@ export default function Template(V) {
                         </div>
                       </div>
                       <div
+                        data-sec="sel"
                         style={css(
-                          `grid-area: sel; width: ${V.lay.selW}; min-width: ${V.lay.selMin}; max-width: ${V.lay.selMax}; min-height: 0; overflow-y: auto; box-sizing: border-box; background: #161E29; border: 1px solid #243042; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px;`,
+                          `grid-area: sel; width: ${V.lay.selW}; min-width: ${V.lay.selMin}; max-width: ${V.lay.selMax}; min-height: 0; overflow-y: auto; box-sizing: border-box; background: #161E29; border: 1px solid #243042; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: ${V.secRing.sel};`,
                         )}
                       >
-                        <div style={css(`display: flex; flex-direction: column; gap: 2px; min-width: 0;`)}>
+                        <div
+                          style={css(
+                            `display: flex; flex-direction: column; gap: 2px; min-width: 0;`,
+                          )}
+                        >
                           <span
-                            style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`)}
+                            style={css(
+                              `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
+                            )}
                           >
-                            {'SELECTED \u00b7 TILE '}
+                            <SecKey n="3" on={V.secOn.sel} />
+                            {"SELECTED \u00b7 TILE "}
                             {V.ins.num}
                           </span>
-                          <span style={css(`font-size: 15px; font-weight: 600;`)}>{V.ins.title}</span>
-                          <span style={css(`font-size: 12.5px; color: ${V.ins.stateColor};`)}>{V.ins.sub}</span>
+                          <span
+                            style={css(`font-size: 15px; font-weight: 600;`)}
+                          >
+                            {V.ins.title}
+                          </span>
+                          <span
+                            style={css(
+                              `font-size: 12.5px; color: ${V.ins.stateColor};`,
+                            )}
+                          >
+                            {V.ins.sub}
+                          </span>
                         </div>
-                        <div style={css(`display: flex; gap: 6px; flex-wrap: ${V.lay.selWrap};`)}>
+                        <div
+                          style={css(
+                            `display: flex; gap: 6px; flex-wrap: ${V.lay.selWrap};`,
+                          )}
+                        >
                           <button
                             type="button"
                             onClick={V.startSwap}
@@ -849,7 +1182,7 @@ export default function Template(V) {
                               `height: 34px; width: 40px; border-radius: 6px; font-size: 17px; line-height: 1; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                             )}
                           >
-                            {'\u21c4'}
+                            {"\u21c4"}
                           </button>
                           <button
                             type="button"
@@ -871,7 +1204,7 @@ export default function Template(V) {
                               `height: 34px; padding: 0 12px; border-radius: 6px; font-size: 12.5px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                             )}
                           >
-                            {'Clear'}
+                            {"Clear"}
                           </button>
                         </div>
                         {V.ins.hasFeed ? (
@@ -879,14 +1212,28 @@ export default function Template(V) {
                             <div
                               role="group"
                               aria-label="View"
-                              style={css(`display: flex; align-items: center; gap: 4px; flex-wrap: ${V.lay.selWrap};`)}
+                              style={css(
+                                `display: flex; align-items: center; gap: 4px; flex-wrap: ${V.lay.selWrap};`,
+                              )}
                             >
-                              <span style={css(`font-size: 12px; color: #95A3B5; margin-right: 4px; white-space: nowrap;`)}>
-                                {'View '}
-                                <span style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px;`)}>{V.keys.altC}</span>{' '}
+                              <span
+                                style={css(
+                                  `font-size: 12px; color: #95A3B5; margin-right: 4px; white-space: nowrap;`,
+                                )}
+                              >
+                                {"View "}
+                                <span
+                                  style={css(
+                                    `font-family: 'IBM Plex Mono', monospace; font-size: 11px;`,
+                                  )}
+                                >
+                                  {V.keys.altC}
+                                </span>{" "}
                               </span>
                               {(V.ins.views || []).map((v, i_v) => (
-                                <React.Fragment key={v && v.key != null ? v.key : i_v}>
+                                <React.Fragment
+                                  key={v && v.key != null ? v.key : i_v}
+                                >
                                   <button
                                     type="button"
                                     onClick={v.pick}
@@ -897,19 +1244,21 @@ export default function Template(V) {
                                       `height: 32px; padding: 0 9px; border-radius: 6px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.03em; cursor: pointer; background: ${v.bg}; border: ${v.border}; display: flex; align-items: center; gap: 6px;`,
                                     )}
                                   >
-                                    {' '}
-                                    <span>{v.label}</span>{' '}
+                                    {" "}
+                                    <span>{v.label}</span>{" "}
                                     {v.hasTag ? (
                                       <>
-                                        {' '}
+                                        {" "}
                                         <span
                                           aria-hidden="true"
-                                          style={css(`width: 7px; height: 7px; border-radius: 50%; background: #FF6B7A; flex: 0 0 7px;`)}
+                                          style={css(
+                                            `width: 7px; height: 7px; border-radius: 50%; background: #FF6B7A; flex: 0 0 7px;`,
+                                          )}
                                         >
-                                          {' '}
-                                        </span>{' '}
+                                          {" "}
+                                        </span>{" "}
                                       </>
-                                    ) : null}{' '}
+                                    ) : null}{" "}
                                   </button>
                                 </React.Fragment>
                               ))}
@@ -917,7 +1266,9 @@ export default function Template(V) {
                             <div
                               role="group"
                               aria-label="On-screen display"
-                              style={css(`display: flex; align-items: center; gap: 4px; flex-wrap: ${V.lay.selWrap};`)}
+                              style={css(
+                                `display: flex; align-items: center; gap: 4px; flex-wrap: ${V.lay.selWrap};`,
+                              )}
                             >
                               <button
                                 type="button"
@@ -927,11 +1278,19 @@ export default function Template(V) {
                                   `height: 32px; padding: 0 12px; border-radius: 6px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.03em; cursor: pointer; background: ${V.ins.osdBg}; border: ${V.ins.osdBorder};`,
                                 )}
                               >
-                                {'OSD'}
+                                {"OSD"}
                               </button>
-                              <span style={css(`font-size: 12px; color: #95A3B5; margin: 0 2px 0 6px;`)}>{'Text'}</span>
+                              <span
+                                style={css(
+                                  `font-size: 12px; color: #95A3B5; margin: 0 2px 0 6px;`,
+                                )}
+                              >
+                                {"Text"}
+                              </span>
                               {(V.ins.osdSizes || []).map((z, i_z) => (
-                                <React.Fragment key={z && z.key != null ? z.key : i_z}>
+                                <React.Fragment
+                                  key={z && z.key != null ? z.key : i_z}
+                                >
                                   <button
                                     type="button"
                                     onClick={z.pick}
@@ -963,11 +1322,17 @@ export default function Template(V) {
                                   `display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px;`,
                                 )}
                               >
-                                <span style={css(`color: #FFB547; font-weight: 600;`)}>
-                                  {'REC '}
+                                <span
+                                  style={css(
+                                    `color: #FFB547; font-weight: 600;`,
+                                  )}
+                                >
+                                  {"REC "}
                                   {V.pb.time}
                                 </span>
-                                <span style={css(`color: #B7C3D1;`)}>{V.pb.behind}</span>
+                                <span style={css(`color: #B7C3D1;`)}>
+                                  {V.pb.behind}
+                                </span>
                               </div>
                               <input
                                 type="range"
@@ -977,9 +1342,15 @@ export default function Template(V) {
                                 value={V.pb.pos}
                                 onChange={V.pb.scrub}
                                 aria-label="Playback position"
-                                style={css(`width: 100%; accent-color: #FFB547;`)}
+                                style={css(
+                                  `width: 100%; accent-color: #FFB547;`,
+                                )}
                               />
-                              <div style={css(`display: flex; gap: 4px; flex-wrap: ${V.lay.selWrap}; align-items: center;`)}>
+                              <div
+                                style={css(
+                                  `display: flex; gap: 4px; flex-wrap: ${V.lay.selWrap}; align-items: center;`,
+                                )}
+                              >
                                 <button
                                   type="button"
                                   onClick={V.pb.back}
@@ -988,7 +1359,7 @@ export default function Template(V) {
                                     `height: 30px; padding: 0 8px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                                   )}
                                 >
-                                  {'\u221210s'}
+                                  {"\u221210s"}
                                 </button>
                                 <button
                                   type="button"
@@ -1008,10 +1379,12 @@ export default function Template(V) {
                                     `height: 30px; padding: 0 8px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                                   )}
                                 >
-                                  {'+10s'}
+                                  {"+10s"}
                                 </button>
                                 {(V.pb.speeds || []).map((sp, i_sp) => (
-                                  <React.Fragment key={sp && sp.key != null ? sp.key : i_sp}>
+                                  <React.Fragment
+                                    key={sp && sp.key != null ? sp.key : i_sp}
+                                  >
                                     <button
                                       type="button"
                                       onClick={sp.pick}
@@ -1031,7 +1404,7 @@ export default function Template(V) {
                                     `margin-left: auto; height: 30px; padding: 0 10px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer; background: transparent; border: 1px solid #4CC3FF; color: #8ED9FF;`,
                                   )}
                                 >
-                                  {'Back to live'}
+                                  {"Back to live"}
                                 </button>
                               </div>
                             </div>
@@ -1045,7 +1418,11 @@ export default function Template(V) {
                                 `border: 1px solid #6B5A2F; background: #241F14; border-radius: 6px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;`,
                               )}
                             >
-                              <span style={css(`flex: 1 1 220px; min-width: 0; white-space: normal; font-size: 13px; color: #FFD27A;`)}>
+                              <span
+                                style={css(
+                                  `flex: 1 1 220px; min-width: 0; white-space: normal; font-size: 13px; color: #FFD27A;`,
+                                )}
+                              >
                                 {V.ins.warnText}
                               </span>
                               <button
@@ -1055,7 +1432,7 @@ export default function Template(V) {
                                   `height: 32px; padding: 0 12px; border-radius: 6px; font-size: 12.5px; cursor: pointer; background: transparent; border: 1px solid #FFD27A; color: #FFD27A;`,
                                 )}
                               >
-                                {'Switch anyway'}
+                                {"Switch anyway"}
                               </button>
                               <button
                                 type="button"
@@ -1064,7 +1441,7 @@ export default function Template(V) {
                                   `height: 32px; padding: 0 12px; border-radius: 6px; font-size: 12.5px; cursor: pointer; background: transparent; border: 1px solid #33435A;`,
                                 )}
                               >
-                                {'Cancel'}
+                                {"Cancel"}
                               </button>
                             </div>
                           </>
@@ -1077,9 +1454,17 @@ export default function Template(V) {
                       >
                         {V.lay.tabs ? (
                           <>
-                            <div role="tablist" aria-label="Desk panels" style={css(`grid-area: tabs; display: flex; gap: 4px;`)}>
+                            <div
+                              role="tablist"
+                              aria-label="Desk panels"
+                              style={css(
+                                `grid-area: tabs; display: flex; gap: 4px;`,
+                              )}
+                            >
                               {(V.botTabs || []).map((bt, i_bt) => (
-                                <React.Fragment key={bt && bt.key != null ? bt.key : i_bt}>
+                                <React.Fragment
+                                  key={bt && bt.key != null ? bt.key : i_bt}
+                                >
                                   <button
                                     type="button"
                                     role="tab"
@@ -1099,18 +1484,28 @@ export default function Template(V) {
                         <div
                           role="group"
                           aria-label="Tile arrangement"
+                          data-sec="arr"
                           style={css(
-                            `grid-area: ${V.lay.ga.arr}; min-width: 0; min-height: 0; overflow-y: auto; display: ${V.lay.dp.arr}; flex-direction: column; gap: 6px; box-sizing: border-box; background: ${V.lay.boxBg}; border: ${V.lay.boxBorder}; border-radius: 8px; padding: ${V.lay.boxPad};`,
+                            `grid-area: ${V.lay.ga.arr}; min-width: 0; min-height: 0; overflow-y: auto; display: ${V.lay.dp.arr}; flex-direction: column; gap: 6px; box-sizing: border-box; background: ${V.lay.boxBg}; border: ${V.lay.boxBorder}; border-radius: 8px; padding: ${V.lay.boxPad}; box-shadow: ${V.secRing.arr};`,
                           )}
                         >
                           <span
-                            style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`)}
+                            style={css(
+                              `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
+                            )}
                           >
-                            {'ARRANGEMENT'}
+                            <SecKey n="5" on={V.secOn.arr} />
+                            {"ARRANGEMENT"}
                           </span>
-                          <div style={css(`display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 4px;`)}>
+                          <div
+                            style={css(
+                              `display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 4px;`,
+                            )}
+                          >
                             {(V.presets || []).map((p, i_p) => (
-                              <React.Fragment key={p && p.key != null ? p.key : i_p}>
+                              <React.Fragment
+                                key={p && p.key != null ? p.key : i_p}
+                              >
                                 <button
                                   type="button"
                                   onClick={p.pick}
@@ -1127,39 +1522,59 @@ export default function Template(V) {
                                     )}
                                   >
                                     {(p.cells || []).map((pc, i_pc) => (
-                                      <React.Fragment key={pc && pc.key != null ? pc.key : i_pc}>
-                                        {' '}
+                                      <React.Fragment
+                                        key={
+                                          pc && pc.key != null ? pc.key : i_pc
+                                        }
+                                      >
+                                        {" "}
                                         <span
                                           style={css(
                                             `grid-column: ${pc.gc}; grid-row: ${pc.gr}; background: ${p.cellBg}; border-radius: 1px;`,
                                           )}
                                         >
-                                          {' '}
-                                        </span>{' '}
+                                          {" "}
+                                        </span>{" "}
                                       </React.Fragment>
                                     ))}
                                   </span>
-                                  <span style={css(`font-size: 12.5px; white-space: nowrap;`)}>{p.label}</span>
+                                  <span
+                                    style={css(
+                                      `font-size: 12.5px; white-space: nowrap;`,
+                                    )}
+                                  >
+                                    {p.label}
+                                  </span>
                                 </button>
                               </React.Fragment>
                             ))}
                           </div>
                         </div>
                         <div
+                          data-sec="saved"
                           style={css(
-                            `grid-area: ${V.lay.ga.saved}; min-width: 0; min-height: 0; overflow-y: auto; display: ${V.lay.dp.saved}; flex-direction: column; gap: 12px; box-sizing: border-box; background: ${V.lay.boxBg}; border: ${V.lay.boxBorder}; border-radius: 8px; padding: ${V.lay.boxPad};`,
+                            `grid-area: ${V.lay.ga.saved}; min-width: 0; min-height: 0; overflow-y: auto; display: ${V.lay.dp.saved}; flex-direction: column; gap: 12px; box-sizing: border-box; background: ${V.lay.boxBg}; border: ${V.lay.boxBorder}; border-radius: 8px; padding: ${V.lay.boxPad}; box-shadow: ${V.secRing.saved};`,
                           )}
                         >
-                          <div role="group" aria-label="Saved layouts" style={css(`display: flex; flex-direction: column; gap: 6px;`)}>
+                          <div
+                            role="group"
+                            aria-label="Saved layouts"
+                            style={css(
+                              `display: flex; flex-direction: column; gap: 6px;`,
+                            )}
+                          >
                             <span
                               style={css(
                                 `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
                               )}
                             >
-                              {'SAVED LAYOUTS'}
+                              <SecKey n="6" on={V.secOn.saved} />
+                              {"SAVED LAYOUTS"}
                             </span>
                             {(V.layouts || []).map((l, i_l) => (
-                              <React.Fragment key={l && l.key != null ? l.key : i_l}>
+                              <React.Fragment
+                                key={l && l.key != null ? l.key : i_l}
+                              >
                                 <button
                                   type="button"
                                   onClick={l.recall}
@@ -1168,23 +1583,31 @@ export default function Template(V) {
                                     `min-height: 36px; padding: 0 10px; border-radius: 6px; font-size: 13px; cursor: pointer; background: ${l.bg}; border: ${l.border}; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left;`,
                                   )}
                                 >
-                                  {' '}
-                                  <span>{l.name}</span>{' '}
-                                  <span style={css(`font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #95A3B5;`)}>
+                                  {" "}
+                                  <span>{l.name}</span>{" "}
+                                  <span
+                                    style={css(
+                                      `font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #95A3B5;`,
+                                    )}
+                                  >
                                     {l.meta}
-                                  </span>{' '}
+                                  </span>{" "}
                                 </button>
                               </React.Fragment>
                             ))}
                           </div>
-                          <div style={css(`display: flex; flex-direction: column; gap: 6px;`)}>
+                          <div
+                            style={css(
+                              `display: flex; flex-direction: column; gap: 6px;`,
+                            )}
+                          >
                             <label
                               htmlFor="layout-name"
                               style={css(
                                 `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
                               )}
                             >
-                              {'SAVE AS'}
+                              {"SAVE AS"}
                             </label>
                             <div style={css(`display: flex; gap: 6px;`)}>
                               <input
@@ -1203,24 +1626,30 @@ export default function Template(V) {
                                   `height: 36px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: transparent; border: 1px solid #4CC3FF; color: #8ED9FF;`,
                                 )}
                               >
-                                {'Save'}
+                                {"Save"}
                               </button>
                             </div>
                           </div>
                         </div>
                         <div
                           onMouseLeave={V.logLeave}
+                          data-sec="log"
                           style={css(
-                            `grid-area: ${V.lay.ga.log}; position: relative; min-width: 0; min-height: 0; display: ${V.lay.dp.log}; flex-direction: column; gap: 8px; box-sizing: border-box; background: #161E29; border: 1px solid #243042; border-radius: 8px; padding: 12px;`,
+                            `grid-area: ${V.lay.ga.log}; position: relative; min-width: 0; min-height: 0; display: ${V.lay.dp.log}; flex-direction: column; gap: 8px; box-sizing: border-box; background: #161E29; border: 1px solid #243042; border-radius: 8px; padding: 12px; box-shadow: ${V.secRing.log};`,
                           )}
                         >
-                          <div style={css(`display: flex; justify-content: space-between; align-items: baseline; gap: 8px;`)}>
+                          <div
+                            style={css(
+                              `display: flex; justify-content: space-between; align-items: baseline; gap: 8px;`,
+                            )}
+                          >
                             <span
                               style={css(
                                 `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #95A3B5;`,
                               )}
                             >
-                              {'RECENT CHANGES'}
+                              <SecKey n="4" on={V.secOn.log} />
+                              {"RECENT CHANGES"}
                             </span>
                           </div>
                           <ol
@@ -1229,8 +1658,11 @@ export default function Template(V) {
                             )}
                           >
                             {(V.log || []).map((e, i_e) => (
-                              <React.Fragment key={e && e.key != null ? e.key : i_e}>
+                              <React.Fragment
+                                key={e && e.key != null ? e.key : i_e}
+                              >
                                 <li
+                                  data-row={i_e}
                                   onMouseEnter={e.enter}
                                   style={css(
                                     `display: flex; align-items: center; gap: 8px; font-size: 12.5px; min-height: 30px; padding: 0 4px; border-radius: 4px; background: ${e.bg};`,
@@ -1245,7 +1677,6 @@ export default function Template(V) {
                                   </span>
                                   <button
                                     type="button"
-                                    className="rowbtn"
                                     onClick={e.pin}
                                     aria-expanded={e.expanded}
                                     title={e.text}
@@ -1257,19 +1688,19 @@ export default function Template(V) {
                                   </button>
                                   {e.isCurrent ? (
                                     <>
-                                      {' '}
+                                      {" "}
                                       <span
                                         style={css(
                                           `flex: 0 0 auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8ED9FF; padding: 0 6px;`,
                                         )}
                                       >
-                                        {'CURRENT'}
-                                      </span>{' '}
+                                        {"CURRENT"}
+                                      </span>{" "}
                                     </>
                                   ) : null}
                                   {e.notCurrent ? (
                                     <>
-                                      {' '}
+                                      {" "}
                                       <button
                                         type="button"
                                         onClick={e.restore}
@@ -1278,8 +1709,8 @@ export default function Template(V) {
                                           `flex: 0 0 auto; height: 26px; padding: 0 8px; border-radius: 6px; font-size: 12px; cursor: pointer; background: transparent; border: 1px solid #33435A; color: #B7C3D1;`,
                                         )}
                                       >
-                                        {'Restore'}
-                                      </button>{' '}
+                                        {"Restore"}
+                                      </button>{" "}
                                     </>
                                   ) : null}
                                 </li>
@@ -1300,17 +1731,25 @@ export default function Template(V) {
                                     `font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #95A3B5;`,
                                   )}
                                 >
-                                  {'WALL AFTER \u00b7 '}
+                                  {"WALL AFTER \u00b7 "}
                                   {V.logCard.t}
                                 </span>
-                                <span style={css(`font-size: 12.5px; color: #DCE3EC;`)}>{V.logCard.text}</span>
+                                <span
+                                  style={css(
+                                    `font-size: 12.5px; color: #DCE3EC;`,
+                                  )}
+                                >
+                                  {V.logCard.text}
+                                </span>
                                 <div
                                   style={css(
                                     `display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(12, minmax(0, 1fr)); gap: 2px; aspect-ratio: 16 / 9; background: #0A0E13; border-radius: 4px; padding: 2px;`,
                                   )}
                                 >
                                   {(V.logCard.cells || []).map((mc, i_mc) => (
-                                    <React.Fragment key={mc && mc.key != null ? mc.key : i_mc}>
+                                    <React.Fragment
+                                      key={mc && mc.key != null ? mc.key : i_mc}
+                                    >
                                       <span
                                         style={css(
                                           `grid-column: ${mc.gc}; grid-row: ${mc.gr}; min-width: 0; min-height: 0; overflow: hidden; box-sizing: border-box; background: ${mc.bg}; border: ${mc.border}; border-radius: 2px; padding: 2px 3px; font-size: ${mc.fs}; line-height: 1.15; color: #DCE3EC;`,
@@ -1321,7 +1760,13 @@ export default function Template(V) {
                                     </React.Fragment>
                                   ))}
                                 </div>
-                                <span style={css(`font-size: 12.5px; color: #FFD27A;`)}>{V.logCard.diff}</span>
+                                <span
+                                  style={css(
+                                    `font-size: 12.5px; color: #FFD27A;`,
+                                  )}
+                                >
+                                  {V.logCard.diff}
+                                </span>
                               </div>
                             </>
                           ) : null}
@@ -1347,7 +1792,7 @@ export default function Template(V) {
                   >
                     <div
                       style={css(
-                        `display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(12, minmax(0, 1fr)); gap: 0.3cqw; height: 100%; background: #05070A;`,
+                        `display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(12, minmax(0, 1fr)); gap: 0.35cqw; height: 100%; background: #3E4856;`,
                       )}
                     >
                       {(V.wall || []).map((w, i_w) => (
@@ -1357,14 +1802,18 @@ export default function Template(V) {
                               `grid-column: ${w.gc}; grid-row: ${w.gr}; min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #0B0F14; box-shadow: ${w.ring}; overflow: hidden;`,
                             )}
                           >
-                            <div style={css(`position: relative; flex: 1 1 auto; min-height: 0;`)}>
+                            <div
+                              style={css(
+                                `position: relative; flex: 1 1 auto; min-height: 0;`,
+                              )}
+                            >
                               <div
                                 className={`scn ${w.cls}`}
                                 style={css(
                                   `position: absolute; inset: 0; background-size: ${w.bsz}; background-position: ${w.bpos}; filter: ${w.filter};`,
                                 )}
                               >
-                                {' '}
+                                {" "}
                               </div>
                               {w.pip ? (
                                 <>
@@ -1379,8 +1828,25 @@ export default function Template(V) {
                                         `position: absolute; inset: 0; background-size: 150%; background-position: ${w.bpos}; filter: ${w.pipFilter};`,
                                       )}
                                     >
-                                      {' '}
+                                      {" "}
                                     </div>
+                                    {w.osd ? (
+                                      <svg
+                                        aria-hidden="true"
+                                        viewBox="-50 -50 100 100"
+                                        style={css(
+                                          `position: absolute; left: 50%; top: 50%; width: 22%; transform: translate(-50%, -50%); overflow: visible; filter: drop-shadow(0 0 1px #000);`,
+                                        )}
+                                      >
+                                        <path
+                                          d="M -50 0 H -12 M 12 0 H 50 M 0 -30 V -10 M 0 10 V 30"
+                                          stroke="#E9DC7A"
+                                          strokeWidth="3.5"
+                                          fill="none"
+                                        />
+                                        <circle r="3" fill="#E9DC7A" />
+                                      </svg>
+                                    ) : null}
                                     <span
                                       style={css(
                                         `position: absolute; left: 0; bottom: 0; font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 700; font-size: ${w.pipFs}; color: #05070A; background: ${w.pipTagBg}; padding: 1px 5px;`,
@@ -1393,54 +1859,22 @@ export default function Template(V) {
                               ) : null}
                               {w.stripes ? (
                                 <>
-                                  {' '}
+                                  {" "}
                                   <div
                                     style={css(
                                       `position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255, 107, 122, 0.22) 0 1.2cqw, transparent 1.2cqw 2.4cqw);`,
                                     )}
                                   >
-                                    {' '}
-                                  </div>{' '}
+                                    {" "}
+                                  </div>{" "}
                                 </>
                               ) : null}
                               {w.osd ? (
-                                <>
-                                  <div
-                                    aria-hidden="true"
-                                    style={css(
-                                      `position: absolute; inset: 0; font-family: 'IBM Plex Mono', monospace; font-size: ${w.osdFs}; line-height: 1.25; color: #E9DC7A; text-shadow: 0 0 2px #000000, 0 0 2px #000000;`,
-                                    )}
-                                  >
-                                    <span style={css(`position: absolute; left: 4%; top: 5%; white-space: pre-line;`)}>{w.osdTL}</span>
-                                    <span
-                                      style={css(
-                                        `position: absolute; left: 50%; top: 5%; transform: translateX(-50%); white-space: nowrap;`,
-                                      )}
-                                    >
-                                      {w.osdTC}
-                                    </span>
-                                    <span style={css(`position: absolute; left: 4%; bottom: 6%; white-space: pre-line;`)}>{w.osdBL}</span>
-                                    <span
-                                      style={css(`position: absolute; right: 4%; bottom: 6%; text-align: right; white-space: pre-line;`)}
-                                    >
-                                      {w.osdBR}
-                                    </span>
-                                    <span
-                                      style={css(
-                                        `position: absolute; left: 50%; top: 50%; width: 10%; border-top: 2px solid #E9DC7A; transform: translate(-50%, -50%);`,
-                                      )}
-                                    >
-                                      {' '}
-                                    </span>
-                                    <span
-                                      style={css(
-                                        `position: absolute; left: 50%; top: 50%; height: 16%; border-left: 2px solid #E9DC7A; transform: translate(-50%, -50%);`,
-                                      )}
-                                    >
-                                      {' '}
-                                    </span>
-                                  </div>
-                                </>
+                                <Osd
+                                  d={w.osdD}
+                                  k={w.osdK}
+                                  compact={w.osdCompact}
+                                />
                               ) : null}
                               {w.hasCenter ? (
                                 <>
@@ -1465,7 +1899,13 @@ export default function Template(V) {
                                 `flex: 0 0 auto; display: flex; align-items: center; gap: ${w.gap}; padding: ${w.pad}; background: ${w.bandBg}; color: ${w.bandColor}; font-family: 'IBM Plex Sans Condensed', sans-serif; font-size: ${w.fs}; line-height: 1.1;`,
                               )}
                             >
-                              <span style={css(`font-family: 'IBM Plex Mono', monospace; opacity: 0.75;`)}>{w.num}</span>
+                              <span
+                                style={css(
+                                  `font-family: 'IBM Plex Mono', monospace; opacity: 0.75;`,
+                                )}
+                              >
+                                {w.num}
+                              </span>
                               <span
                                 style={css(
                                   `font-weight: 700; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; min-width: 0;`,
@@ -1473,25 +1913,33 @@ export default function Template(V) {
                               >
                                 {w.title}
                               </span>
-                              <span style={css(`font-weight: 700; white-space: nowrap; color: ${w.stateColor};`)}>{w.state}</span>
+                              <span
+                                style={css(
+                                  `font-weight: 700; white-space: nowrap; color: ${w.stateColor};`,
+                                )}
+                              >
+                                {w.state}
+                              </span>
                             </div>
                           </div>
                         </React.Fragment>
                       ))}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="peek"
-                    onClick={V.showDesk}
-                    aria-label="Back to the layout desk"
-                    style={css(
-                      `position: absolute; right: 14px; bottom: 14px; z-index: 30; height: 34px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: #111720; border: 1px solid #33435A; color: #DCE3EC;`,
-                    )}
-                  >
-                    {'Desk '}
-                    {V.keys.altW}
-                  </button>
+                  {V.showPeek ? (
+                    <button
+                      type="button"
+                      className="peek"
+                      onClick={V.showDesk}
+                      aria-label="Back to the layout desk"
+                      style={css(
+                        `position: absolute; right: 14px; bottom: 14px; z-index: 30; height: 34px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; background: #111720; border: 1px solid #33435A; color: #DCE3EC;`,
+                      )}
+                    >
+                      {"Desk "}
+                      {V.keys.altW}
+                    </button>
+                  ) : null}
                 </section>
               </>
             ) : null}
